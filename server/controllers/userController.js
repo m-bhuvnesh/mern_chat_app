@@ -30,11 +30,11 @@ export const signup = async (req, res) => {
     const token = generateToken(newUser._id);
 
     // Remove password from response
-    const { password: _, ...userData } = newUser._doc;
+    // const { password: _, ...userData } = newUser._doc;
 
     return res.json({
       success: true,
-      userData,
+      userData: newUser,
       token,
       message: "Account created successfully",
     });
@@ -62,7 +62,7 @@ export const login = async (req, res) => {
     const token = generateToken(user._id);
 
     // Remove password before sending
-    const { password: _, ...userData } = user._doc;
+    // const { password: _, ...userData } = user._doc;
 
     return res.json({
       success: true,
@@ -106,11 +106,11 @@ export const updateProfile = async (req, res) => {
       );
     }
 
-    const { password: _, ...userData } = updatedUser._doc;
+    // const { password: _, ...userData } = updatedUser._doc;
 
     res.json({
       success: true,
-      userData,
+      userData: updatedUser,
       message: "Profile updated successfully",
     });
   } catch (error) {

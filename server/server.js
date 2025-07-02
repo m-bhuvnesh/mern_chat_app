@@ -1,5 +1,7 @@
 import express from "express";
-import "dotenv/config";
+// import "dotenv/config";
+import dotenv from "dotenv";
+dotenv.config();
 import cors from "cors";
 import http from "http";
 import { connectDB } from "./lib/db.js";
@@ -14,7 +16,7 @@ const server = http.createServer(app);
 export const io = new Server(server, {
   cors: { origin: "*" },
 });
- 
+
 export const userSocketMap = {}; //{userId: socketId}
 // Socket connection
 io.on("connection", (socket) => {

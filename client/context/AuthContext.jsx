@@ -36,28 +36,28 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
- const login = async (state, credentials) => {
-  try {
-    const { data } = await axios.post(`/api/auth/${state}`, credentials);
+  const login = async (state, credentials) => {
+    try {
+      const { data } = await axios.post(`/api/auth/${state}`, credentials);
 
-    if (data.success && data.token) {
-      // ✅ Only save token if it's valid
-      setAuthUser(data.userData);
-      connectSocket(data.userData);
+      if (data.success && data.token) {
+        // ✅ Only save token if it's valid
+        setAuthUser(data.userData);
+        connectSocket(data.userData);
 
-      axios.defaults.headers.common["Authorization"] = `Bearer ${data.token}`;
-      setToken(data.token);
-      localStorage.setItem("token", data.token);
+        axios.defaults.headers.common["Authorization"] = `Bearer ${data.token}`;
+        setToken(data.token);
+        localStorage.setItem("token", data.token);
 
-      toast.success(data.message || "Login successful");
-    } else {
-      toast.error(data.message || "Login failed");
+        toast.success(data.message || "Login successful");
+      } else {
+        toast.error(data.message || "Login failed");
+      }
+    } catch (error) {
+      console.error(error);
+      toast.error(error.message || "Something went wrong");
     }
-  } catch (error) {
-    console.error(error);
-    toast.error(error.message || "Something went wrong");
-  }
-};
+  };
   const logout = async () => {
     localStorage.removeItem("token");
     setToken(null);
@@ -104,7 +104,7 @@ export const AuthProvider = ({ children }) => {
   useEffect(() => {
     if (token) {
       // ✅ Set header properly if token exists
-      axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
+      axios.defaults.headers.common["token"] = `Bearer ${token}`;
     }
     checkAuth();
   }, []);
