@@ -17,7 +17,7 @@ export const signup = async (req, res) => {
       return res.json({ success: false, message: "User already exists" });
     }
 
-    const salt = await bcrypt.genSalt(10); // ✅ fixed typo: getSalt -> genSalt
+    const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(password, salt);
 
     const newUser = await User.create({
@@ -29,12 +29,11 @@ export const signup = async (req, res) => {
 
     const token = generateToken(newUser._id);
 
-    // Remove password from response
-    // const { password: _, ...userData } = newUser._doc;
+    const { password: _, ...userData } = newUser._doc;
 
     return res.json({
       success: true,
-      userData: newUser,
+      userData,
       token,
       message: "Account created successfully",
     });
@@ -61,8 +60,7 @@ export const login = async (req, res) => {
 
     const token = generateToken(user._id);
 
-    // Remove password before sending
-    // const { password: _, ...userData } = user._doc;
+    const { password: _, ...userData } = user._doc;
 
     return res.json({
       success: true,
@@ -106,18 +104,15 @@ export const updateProfile = async (req, res) => {
       );
     }
 
-    // const { password: _, ...userData } = updatedUser._doc;
+    const { password: _, ...userData } = updatedUser._doc;
 
     res.json({
       success: true,
-      userData: updatedUser,
+      userData,
       message: "Profile updated successfully",
     });
   } catch (error) {
     console.log(error.message);
-    res.json({
-      success: false,
-      message: error.message,
-    });
+    res.json({ success: false, message: error.message });
   }
 };

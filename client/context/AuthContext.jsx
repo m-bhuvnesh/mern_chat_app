@@ -16,13 +16,7 @@ export const AuthProvider = ({ children }) => {
 
   const checkAuth = async () => {
     try {
-      const storedToken = localStorage.getItem("token");
-      const { data } = await axios.get("/api/auth/check", {
-        headers: {
-          Authorization: `Bearer ${storedToken}`,
-        },
-      });
-
+      const { data } = await axios.get("/api/auth/check");
       if (data.success) {
         setAuthUser(data.user);
         connectSocket(data.user);
@@ -40,8 +34,7 @@ export const AuthProvider = ({ children }) => {
     try {
       const { data } = await axios.post(`/api/auth/${state}`, credentials);
 
-      if (data.success && data.token) {
-        // ✅ Only save token if it's valid
+      if (data.success) {
         setAuthUser(data.userData);
         connectSocket(data.userData);
 
@@ -58,17 +51,16 @@ export const AuthProvider = ({ children }) => {
       toast.error(error.message || "Something went wrong");
     }
   };
+
   const logout = async () => {
     localStorage.removeItem("token");
     setToken(null);
     setAuthUser(null);
     setOnlineUsers([]);
-
-    // ✅ Remove Authorization header
     delete axios.defaults.headers.common["Authorization"];
-
     toast.success("Logout successful");
     socket?.disconnect();
+    
   };
 
   const updateProfile = async (body) => {
@@ -87,26 +79,45 @@ export const AuthProvider = ({ children }) => {
   const connectSocket = (userData) => {
     if (!userData || socket?.connected) return;
 
-    const newSocket = io(backendUrl, {
+    const newSocket = io(import.meta.env.VITE_BACKEND_URL, {
       query: {
         userId: userData._id,
       },
+      transports: ["websocket"],
     });
 
-    newSocket.connect();
-    setSocket(newSocket);
+    newSocket.on("connect", () => {
+      // console.log("✅ Socket connected:", newSocket.id);
+    });
 
     newSocket.on("getOnlineUsers", (userIds) => {
+      // console.log("👥 Online users:", userIds);
       setOnlineUsers(userIds);
     });
+
+    newSocket.on("connect_error", (err) => {
+      console.error("❌ Socket connection error:", err.message);
+    });
+
+    newSocket.on("disconnect", () => {
+      console.warn("🔌 Socket disconnected");
+    });
+
+    setSocket(newSocket);
   };
 
   useEffect(() => {
     if (token) {
-      // ✅ Set header properly if token exists
-      axios.defaults.headers.common["token"] = `Bearer ${token}`;
+      axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
+    } else {
+      delete axios.defaults.headers.common["Authorization"];
     }
-    checkAuth();
+  }, [token]);
+
+  useEffect(() => {
+    if (token) {
+      checkAuth();
+    }
   }, []);
 
   const value = {
