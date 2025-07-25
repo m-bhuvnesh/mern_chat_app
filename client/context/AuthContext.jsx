@@ -22,16 +22,30 @@ export const AuthProvider = ({ children }) => {
         connectSocket(data.user);
       }
     } catch (error) {
-      toast.error(
-        error?.response?.data?.message ||
-          error.message ||
-          "Authentication failed"
-      );
+      const hasToken = localStorage.getItem("token");
+      if (hasToken) {
+        toast.error(
+          error?.response?.data?.message ||
+            error.message ||
+            "Authentication failed"
+        );
+      }
     }
   };
 
   const login = async (state, credentials) => {
     try {
+      // const storedToken = localStorage.getItem("token");
+
+      // if (storedToken) {
+      //   setToken(storedToken);
+      //   axios.defaults.headers.common[
+      //     "Authorization"
+      //   ] = `Bearer ${storedToken}`;
+      //   checkAuth();
+      // } else {
+      //   delete axios.defaults.headers.common["Authorization"];
+      // }
       const { data } = await axios.post(`/api/auth/${state}`, credentials);
 
       if (data.success) {
@@ -60,14 +74,22 @@ export const AuthProvider = ({ children }) => {
     delete axios.defaults.headers.common["Authorization"];
     toast.success("Logout successful");
     socket?.disconnect();
-    
   };
 
   const updateProfile = async (body) => {
     try {
+      const storedToken = localStorage.getItem("token");
+
+      if (storedToken) {
+        setToken(storedToken);
+        axios.defaults.headers.common["Authorization"] = `Bearer ${storedToken}`;
+        checkAuth();
+      } else {
+        delete axios.defaults.headers.common["Authorization"];
+      }
       const { data } = await axios.put("/api/auth/update-profile", body);
       if (data.success) {
-        setAuthUser(data.user);
+        setAuthUser(data.userData);
         toast.success("Profile updated successfully");
       }
     } catch (error) {
@@ -115,9 +137,14 @@ export const AuthProvider = ({ children }) => {
   }, [token]);
 
   useEffect(() => {
-    if (token) {
-      checkAuth();
-    }
+    // const storedToken = localStorage.getItem("token");
+    // if (storedToken) {
+    //   setToken(storedToken);
+    //   axios.defaults.headers.common["Authorization"] = `Bearer ${storedToken}`;
+    //   checkAuth();
+    // } else {
+    //   delete axios.defaults.headers.common["Authorization"];
+    // }
   }, []);
 
   const value = {
