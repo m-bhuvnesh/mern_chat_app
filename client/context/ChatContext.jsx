@@ -102,6 +102,6 @@ export const ChatProvider = ({ children }) => {
     setUnseenMessages,
   };
   return (
-    <ChatProvider.Provider value={value}>{children}</ChatProvider.Provider>
+    <ChatContext.Provider value={value}>{children}</ChatContext.Provider>
   );
 };
