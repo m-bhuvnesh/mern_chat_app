@@ -65,12 +65,13 @@ app.use((err, req, res, next) => {
 
 // ✅ Connect MongoDB and start server
 await connectDB();
-if (process.env.NODE_ENV !== "production") {
-  const PORT = process.env.PORT || 5000;
-  server.listen(PORT, () => {
-    console.log("✅ MongoDB connected successfully");
-    console.log(`🚀 Server is running on port: ${PORT}`);
-  });
-}
+console.log("✅ MongoDB connected successfully");
+// if (process.env.NODE_ENV !== "production") {
+//   const PORT = process.env.PORT || 5000;
+//   server.listen(PORT, () => {
+//     console.log("✅ MongoDB connected successfully");
+//     console.log(`🚀 Server is running on port: ${PORT}`);
+//   });
+// }
 
 export default server; // server for vercel
