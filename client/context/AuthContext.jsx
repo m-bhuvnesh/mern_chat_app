@@ -74,6 +74,8 @@ export const AuthProvider = ({ children }) => {
     delete axios.defaults.headers.common["Authorization"];
     toast.success("Logout successful");
     socket?.disconnect();
+    console.trace();
+    
   };
 
   const updateProfile = async (body) => {
@@ -137,14 +139,14 @@ export const AuthProvider = ({ children }) => {
   }, [token]);
 
   useEffect(() => {
-    // const storedToken = localStorage.getItem("token");
-    // if (storedToken) {
-    //   setToken(storedToken);
-    //   axios.defaults.headers.common["Authorization"] = `Bearer ${storedToken}`;
-    //   checkAuth();
-    // } else {
-    //   delete axios.defaults.headers.common["Authorization"];
-    // }
+    const storedToken = localStorage.getItem("token");
+    if (storedToken) {
+      setToken(storedToken);
+      axios.defaults.headers.common["Authorization"] = `Bearer ${storedToken}`;
+      checkAuth();
+    } else {
+      delete axios.defaults.headers.common["Authorization"];
+    }
   }, []);
 
   const value = {

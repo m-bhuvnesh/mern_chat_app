@@ -11,7 +11,11 @@ const App = () => {
 
   return (
     // <div className="bg-[url('./src/assets/bgImage.svg')] bg-contain">
-    <div className="bg-[url('./src/assets/bgImage.svg')] bg-contain">
+   <div className="flex flex-col min-h-screen items-center justify-center 
+  bg-black 
+  bg-[url('/src/assets/favicon.png')] 
+  bg-no-repeat bg-center bg-[length:300px_300px] 
+  backdrop-blur-sm opacity-90">
       <Toaster />
       <Routes>
         <Route

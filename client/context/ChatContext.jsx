@@ -9,7 +9,7 @@ export const ChatProvider = ({ children }) => {
   const [users, setUsers] = useState([]);
   const [selectedUser, setSelectedUser] = useState(null);
   const [unseenMessages, setUnseenMessages] = useState({});
-  const { socket, axios } = useContext(AuthContext);
+  const { socket, axios,logout  } = useContext(AuthContext);
 
   //get users for sidebar
 
@@ -19,10 +19,18 @@ export const ChatProvider = ({ children }) => {
 
       if (data.success) {
         setUsers(data.users);
-        setUnseenMessages(data.unseenMessages);
+        setUnseenMessages(data.unseenMessages || {});
+      } else {
+        console.warn("getUsers: response failed", data.message);
       }
     } catch (error) {
       toast.error(error.messages);
+      if (error.response?.status === 401) {
+        console.warn("Unauthorized - will logout");
+        logout();
+      } else {
+        toast.error(error.message || "Failed to fetch users");
+      }
     }
   };
 
@@ -94,14 +102,12 @@ export const ChatProvider = ({ children }) => {
     messages,
     users,
     selectedUser,
-    getUsers,    
+    getUsers,
     getMessages,
     sendMessage,
     setSelectedUser,
     unseenMessages,
     setUnseenMessages,
   };
-  return (
-    <ChatContext.Provider value={value}>{children}</ChatContext.Provider>
-  );
+  return <ChatContext.Provider value={value}>{children}</ChatContext.Provider>;
 };

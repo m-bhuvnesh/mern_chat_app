@@ -16,7 +16,7 @@ const SideBar = () => {
   } = useContext(ChatContext);
 
   const { logout, onlineUsers } = useContext(AuthContext);
-  const [input, setInput] = useState(false);
+  const [input, setInput] = useState("");
 
   const navigate = useNavigate();
   const filterUsers = input
@@ -37,7 +37,7 @@ const SideBar = () => {
     >
       <div className="pb-5">
         <div className="flex justify-between items-center">
-          <img src={assets.logo} alt="logo" className="max-w-40" />
+          <img src={assets.favIconEdited} alt="logo" className="max-w-40" />
           <div className="relative py-2 group">
             <img
               src={assets.menu_icon}
@@ -77,11 +77,19 @@ const SideBar = () => {
         {filterUsers.map((user, index) => (
           <div
             onClick={() => {
-              setSelectedUser(user);
-              setUnseenMessages((prev) => ({
-                ...prev,
-                [user._id]: 0,
-              }));
+              try {
+                console.log("User selected:", user);
+                setSelectedUser(user);
+                setUnseenMessages((prev = {}) => {
+                  console.log("Resetting unseenMessages for", prev);
+                  return {
+                    ...prev,
+                    [user._id]: 0,
+                  };
+                });
+              } catch (error) {
+                console.error("Crash on selecting user:", error);
+              }
             }}
             key={index}
             className={`relative flex item-center gap-2 p-2 pl-4 rounded cursor-pointer max-sm:text-sm ${
@@ -93,14 +101,30 @@ const SideBar = () => {
               alt=""
               className="w-[35px] aspect-[1/1] rounded-full"
             />
+
             <div className="flex flex-col leading-5">
+              <p>{user.fullName}</p>
+              {onlineUsers.includes(user._id) ? (
+                <span className="flex items-center gap-1 text-xs text-green-400">
+                  <span className="w-2 h-2 rounded-full bg-green-400 inline-block"></span>
+                  Online
+                </span>
+              ) : (
+                <span className="flex items-center gap-1 text-xs text-gray-400">
+                  <span className="w-2 h-2 rounded-full bg-gray-400 inline-block"></span>
+                  Offline
+                </span>
+              )}
+            </div>
+
+            {/* <div className="flex flex-col leading-5">
               <p>{user.fullName}</p>
               {onlineUsers.includes(user._id) ? (
                 <span className="text-green-400 text-xs"> Online</span>
               ) : (
                 <span className="text-neutral-400 text-xs"> Offline</span>
               )}
-            </div>
+            </div> */}
             {unseenMessages[user._id] > 0 && (
               <p className="absolute top-4 right-4 text-xs h-5 w-5 flex justify-center item-center rounded-full bg-violet-500/50">
                 {unseenMessages[user._id]}

@@ -36,7 +36,7 @@ const LoginPage = () => {
       items-center justify-center gap-8 sm:justify-evenly
        max-sm:flex-col backdrop-blur-2xl"
     >
-      <img src={assets.logo_big} className="w-[min(30vw,250px)]" alt="" />
+      <img src={assets.logo_bg1} className="w-[min(30vw,320px)]" alt="" />
 
       <form
         onSubmit={onsubmitHandler}
@@ -125,7 +125,7 @@ const LoginPage = () => {
                   setCurrState("Sign up");
                   setIsDataSubmitted(false);
                 }}
-                className="font-medium text-violet-500 ml-2 cursor-pointer"
+                className="font-medium text-cyan-500 ml-2 cursor-pointer"
               >
                 Login here
               </span>
@@ -138,7 +138,7 @@ const LoginPage = () => {
                   setCurrState("Sign up");
                   setIsDataSubmitted(false);
                 }}
-                className="font-medium text-violet-500 ml-2 cursor-pointer"
+                className="font-medium text-cyan-500 ml-2 cursor-pointer"
               >
                 Click here
               </span>

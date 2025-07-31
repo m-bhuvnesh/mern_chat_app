@@ -8,7 +8,7 @@ import { ChatContext } from "../../context/ChatContext";
 import { AuthContext } from "../../context/AuthContext";
 import toast from "react-hot-toast";
 const ChatContainer = () => {
-  const { messages, selectedUser, setSelectedUser, sendMessages, getMessages } =
+  const { messages, selectedUser, setSelectedUser, sendMessage, getMessages } =
     useContext(ChatContext);
   const { authUser, onlineUsers } = useContext(AuthContext);
 
@@ -19,7 +19,7 @@ const ChatContainer = () => {
   const handelSendMessage = async (e) => {
     e.preventDefault();
     if (input.trim() === "") return null;
-    await sendMessages({ text: input.trim() });
+    await sendMessage({ text: input.trim() });
     setInput("");
   };
 
@@ -32,7 +32,7 @@ const ChatContainer = () => {
     }
     const reader = new FileReader();
     reader.onloadend = async () => {
-      await sendMessages({ image: reader.result });
+      await sendMessage({ image: reader.result });
       e.target.value = ""; // Clear the input after sending
       // setInput(""); // Clear the input field
       // toast.success("Image sent successfully!");
@@ -73,7 +73,7 @@ const ChatContainer = () => {
           alt=""
           className="md:hidden max-w-7"
         />
-        <img src={assets.help_icon} className="max-md:hidden max-w-5" alt="" />
+        {/* <img src={assets.help_icon} className="max-md:hidden max-w-5" alt="" /> */}
       </div>
       {/* chat area */}
       <div className="flex flex-col h-[calc(100%-120px)] overflow-y-scroll p-3 pb-6">
@@ -155,7 +155,7 @@ const ChatContainer = () => {
     </div>
   ) : (
     <div className="flex flex-col items-center justify-center gap-2 text-gray-500 bg-white/10 max-md:hidden">
-      <img src={assets.logo_icon} alt="" className="max-w-16 " />
+      <img src={assets.favIcon} alt="" className="max-w-40 " />
       <p className="text-lg font-medium text-white"> Chat anytime , anywhere</p>
     </div>
   );
